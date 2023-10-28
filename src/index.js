@@ -1,17 +1,18 @@
 import debounce from 'lodash.debounce';
 import { fetchBreeds, fetchCatByBreed } from './cat-api';
 import SlimSelect from 'slim-select';
+import { Report } from 'notiflix/build/notiflix-report-aio';
 
 const elements = {
   select: document.querySelector('.breed-select'),
   info: document.querySelector('.cat-info'),
   loader: document.querySelector('.loader'),
-  error: document.querySelector('.error'),
+  // error: document.querySelector('.error'),
 };
 
 elements.select.classList.add('is-hidden');
 elements.info.classList.add('is-hidden');
-elements.error.classList.add('is-hidden');
+// elements.error.classList.add('is-hidden');
 
 fetchBreeds()
   .then(data => {
@@ -23,24 +24,27 @@ fetchBreeds()
           <option value="${id}">${name}</option>`
         );
       });
-
+      new SlimSelect({
+        select: elements.select,
+      });
       elements.select.classList.remove('is-hidden');
       elements.loader.classList.add('is-hidden');
     }, 1000);
   })
   .catch(err => {
-    elements.error.classList.remove('is-hidden');
+    Report.failure('Oops! ', `Something went wrong! Try reloading the page!`);
+
+    // elements.error.classList.remove('is-hidden');
     elements.select.classList.add('is-hidden');
     elements.info.classList.add('is-hidden');
     elements.loader.classList.add('is-hidden');
   });
 
-elements.select.addEventListener('click', debounce(handlerClick, 300));
+elements.select.addEventListener('change', debounce(handlerClick, 300));
 
 function handlerClick(e) {
-  console.log(SlimSelect.select);
-
-  fetchCatByBreed(elements.select.value)
+  elements.info.innerHTML = '';
+  fetchCatByBreed(e.target.value)
     .then(data => {
       elements.loader.classList.remove('is-hidden');
       elements.info.classList.add('is-hidden');
@@ -60,16 +64,19 @@ function handlerClick(e) {
         ] = data;
         elements.info.innerHTML = `
         <img src="${url}" alt="${name}" width="300">
-             <h1>${name}</h1>
+        <div class='about-cat'> 
+        <h1>${name}</h1>
              <p>${description}</p>
-             <p>${temperament}</p>
-          </img>`;
+             <p><b>Temperament:</b> ${temperament}</p>
+          </img>
+        </div>`;
         elements.info.classList.remove('is-hidden');
         elements.loader.classList.add('is-hidden');
       }, 1000);
     })
     .catch(err => {
-      elements.error.classList.remove('is-hidden');
+      Report.failure('Oops! ', `Something went wrong! Try reloading the page!`);
+      // elements.error.classList.remove('is-hidden');
       elements.info.classList.add('is-hidden');
       elements.loader.classList.add('is-hidden');
     });
