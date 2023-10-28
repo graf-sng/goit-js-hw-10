@@ -1,0 +1,2 @@
+.loader{width:100px;height:100px;box-sizing:border-box;border:6px solid #ff3d00;border-color:#ff3d00 rgba(0,0,0,0);border-radius:50%;animation:rotation 1s linear infinite;display:inline-block}@keyframes rotation{0%{transform:rotate(0deg)}to{transform:rotate(360deg)}}.is-hidden{display:none}.breed-select{width:300px;margin-bottom:30px}.cat-info{max-width:900px;margin:0 auto;display:flex}.about-cat{margin-left:30px}
+/*# sourceMappingURL=index.6cd5a701.css.map */
